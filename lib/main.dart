@@ -73,7 +73,7 @@ class MyApp extends StatelessWidget {
               curve: Curves.fastLinearToSlowEaseIn,
               splashIconSize: 400.0,
               splash: const SplashScreen(),
-              nextScreen: const LayoutScreen(),
+              nextScreen:  LayoutScreen(),
             ),
           );
         },

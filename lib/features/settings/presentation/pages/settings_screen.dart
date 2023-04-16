@@ -22,164 +22,173 @@ import 'package:new_edition_shop_app/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({
+  bool isPay;
+   SettingsScreen({
+    this.isPay=false,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (BuildContext context) => sl<ShopCubit>(),
-      child: BlocConsumer<ShopCubit, ShopState>(
-        listener: (context, state) {
-          if (state is GetUserLoginSuccessState) {
-            if (state.login.status) {
-              showToast(
-                text: state.login.message,
-                state: ToastState.success,
-              );
-              sl<SharedPreferences>()
-                  .setString(
-                'token',
-                state.login.data!.token!,
-              ).then((value) {
-                token = state.login.data!.token!;
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MyApp(
-                      //startWidget: const ProfileScreen(),
-                      isDark: ShopCubit.get(context).isDark,
-                    ),
+    return BlocConsumer<ShopCubit, ShopState>(
+      listener: (context, state) {
+        if (state is GetUserLoginSuccessState) {
+          if (state.login.status) {
+            showToast(
+              text: state.login.message,
+              state: ToastState.success,
+            );
+            sl<SharedPreferences>()
+                .setString(
+              'token',
+              state.login.data!.token!,
+            )
+                .then((value) {
+              token = state.login.data!.token!;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MyApp(
+                    //startWidget: const ProfileScreen(),
+                    isDark: ShopCubit.get(context).isDark,
                   ),
-                );
-              });
-            } else {
-              showToast(
-                text: state.login.message,
-                state: ToastState.error,
+                ),
               );
-            }
+            });
+          } else {
+            showToast(
+              text: state.login.message,
+              state: ToastState.error,
+            );
           }
-        },
-        builder: (context, state) {
-          var cubit = ShopCubit.get(context);
-          return Scaffold(
-            backgroundColor: ColorManager.sWhite,
-            body: Padding(
-              padding: const EdgeInsets.all(
-                AppPadding.p20,
-              ),
-              child: Center(
-                child: SingleChildScrollView(
-                  child: Form(
-                    key: cubit.formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          AppStrings.login,
-                          style:
-                              Theme.of(context).textTheme.titleLarge!.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: AppSize.s30,
-                                  ),
-                        ),
-                        const SizedBox(
-                          height: AppSize.s10,
-                        ),
-                        Text(
-                          AppStrings.loginTitle,
-                          style:
-                              Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: ColorManager.grey,
-                                    fontSize: AppSize.s20,
-                                  ),
-                        ),
-                        const SizedBox(
-                          height: AppSize.s30,
-                        ),
-                        MyFormField(
-                          controller: cubit.emailController,
-                          type: TextInputType.emailAddress,
-                          label: 'email address',
-                          prefix: Icons.person,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter your email';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(
-                          height: AppSize.s30,
-                        ),
-                        MyFormField(
-                          controller: cubit.passwordController,
-                          type: TextInputType.visiblePassword,
-                          label: 'password',
-                          prefix: Icons.lock_outline_rounded,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter your password';
-                            }
-                            return null;
-                          },
-                          isPassword: cubit.isPassword,
-                          suffix: cubit.suffix,
-                          onPressed: () {
-                            cubit.changeLoginPasswordVisibility();
-                          },
-                        ),
-                        const SizedBox(
-                          height: AppSize.s30,
-                        ),
-                        ConditionalBuilder(
-                          condition: state is! GetUserLoginLoadingState,
-                          builder: (context) => MyButton(
-                            onPressedTextButton: () {
-                              if (cubit.formKey.currentState!.validate()) {
-                                cubit.getUserLogin(
-                                  email: cubit.emailController.text,
-                                  password: cubit.passwordController.text,
-                                );
-                              }
-                            },
-                            text: 'login',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge!
-                                .copyWith(
-                                  color: ColorManager.sWhite,
+        }
+      },
+      builder: (context, state) {
+        var cubit = ShopCubit.get(context);
+        return Scaffold(
+          backgroundColor: ColorManager.sWhite,
+          body: Padding(
+            padding: const EdgeInsets.all(
+              AppPadding.p20,
+            ),
+            child: Center(
+              child: SingleChildScrollView(
+                child: Form(
+                  key: cubit.formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppStrings.login,
+                        style:
+                            Theme.of(context).textTheme.titleLarge!.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: AppSize.s30,
                                 ),
-                          ),
-                          fallback: (context) => const Center(
-                            child: CircularProgressIndicator(),
-                          ),
+                      ),
+                      const SizedBox(
+                        height: AppSize.s10,
+                      ),
+                      Text(
+                        AppStrings.loginTitle,
+                        style:
+                            Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: ColorManager.grey,
+                                  fontSize: AppSize.s20,
+                                ),
+                      ),
+                      const SizedBox(
+                        height: AppSize.s30,
+                      ),
+                      MyFormField(
+                        controller: cubit.emailController,
+                        type: TextInputType.emailAddress,
+                        label: 'email address',
+                        prefix: Icons.person,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(
+                        height: AppSize.s30,
+                      ),
+                      MyFormField(
+                        controller: cubit.passwordController,
+                        type: TextInputType.visiblePassword,
+                        label: 'password',
+                        prefix: Icons.lock_outline_rounded,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                        },
+                        isPassword: cubit.isPassword,
+                        suffix: cubit.suffix,
+                        onPressed: () {
+                          cubit.changeLoginPasswordVisibility();
+                        },
+                      ),
+                      const SizedBox(
+                        height: AppSize.s30,
+                      ),
+                      ConditionalBuilder(
+                        condition: state is! GetUserLoginLoadingState,
+                        builder: (context) => MyButton(
+                          onPressedTextButton: () {
+                            if (isPay) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProfileScreen(),
+                                  ));
+                            } else {
+                              cubit.changeBottomNav(0);
+                            }
+                            /*if (cubit.formKey.currentState!.validate()) {
+                              cubit.getUserLogin(
+                                email: cubit.emailController.text,
+                                password: cubit.passwordController.text,
+                              );
+                            }*/
+                          },
+                          text: 'login',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge!
+                              .copyWith(
+                                color: ColorManager.sWhite,
+                              ),
                         ),
-                        const SizedBox(
-                          height: AppSize.s30,
+                        fallback: (context) => const Center(
+                          child: CircularProgressIndicator(),
                         ),
-                        // MyButton(
-                        //   onPressedTextButton: () {
-                        //     Constants().signOut();
-                        //   },
-                        //   text: 'signout',
-                        //   style:
-                        //       Theme.of(context).textTheme.titleLarge!.copyWith(
-                        //             color: ColorManager.sWhite,
-                        //           ),
-                        // )
-                      ],
-                    ),
+                      ),
+                      const SizedBox(
+                        height: AppSize.s30,
+                      ),
+                      // MyButton(
+                      //   onPressedTextButton: () {
+                      //     Constants().signOut();
+                      //   },
+                      //   text: 'signout',
+                      //   style:
+                      //       Theme.of(context).textTheme.titleLarge!.copyWith(
+                      //             color: ColorManager.sWhite,
+                      //           ),
+                      // )
+                    ],
                   ),
                 ),
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

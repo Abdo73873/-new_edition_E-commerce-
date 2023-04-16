@@ -7,6 +7,7 @@ import 'package:new_edition_shop_app/core/resources/color_manager.dart';
 import 'package:new_edition_shop_app/core/resources/strings_manager.dart';
 import 'package:new_edition_shop_app/core/service/service_locator.dart';
 import 'package:new_edition_shop_app/features/profile/proile_screen.dart';
+import 'package:new_edition_shop_app/features/settings/presentation/pages/settings_screen.dart';
 import 'package:new_edition_shop_app/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,6 +38,19 @@ class LayoutScreen extends StatelessWidget {
               AppStrings.shopApp,
             ),
             actions: [
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>  SettingsScreen(isPay: true),
+                    ),
+                  );
+                },
+                icon: const Icon(
+                  Icons.payment,
+                ),
+              ),
               IconButton(
                 onPressed: () {
                   cubit.changeThemeMode();
@@ -100,7 +114,6 @@ class LayoutScreen extends StatelessWidget {
             onTap: (index) {
               cubit.changeBottomNav(index);
             },
-
             items: cubit.items,
           ),
           body: cubit.screens[cubit.currentIndex],

@@ -24,8 +24,8 @@ class ShopCubit extends Cubit<ShopState> {
   final GetCategoriesUseCase getCategoriesUseCase;
   final GetUserLoginUseCase getUserLoginUseCase;
 
-  ShopCubit(
-      this.getHomeUseCase, this.getCategoriesUseCase, this.getUserLoginUseCase)
+  ShopCubit(this.getHomeUseCase, this.getCategoriesUseCase,
+      this.getUserLoginUseCase)
       : super(InitialShopState());
 
   Home? home;
@@ -68,13 +68,25 @@ class ShopCubit extends Cubit<ShopState> {
     const HomeScreen(),
     const CategoriesScreen(),
     const FavoritesScreen(),
-    const SettingsScreen(),
+     SettingsScreen(),
   ];
 
 
   void changeBottomNav(int index) {
-    if(index == 3){
-      emit(ChangeBottomProfileNav(login!));
+    print('===========$index============');
+    if (index == 3) {
+      emit(ChangeBottomProfileNav(login ??
+          Login(status: true, message: 'message',
+              data: LoginData(
+                id: 0,
+                  credit: 0,
+                  points: 0,
+                  token: 'ds',
+                  email:'asda',
+                  name:'asda',
+                  image:'asda',
+                  phone:'asda',
+              ))));
     }
     currentIndex = index;
     emit(ChangeBottomNav());
@@ -142,7 +154,7 @@ class ShopCubit extends Cubit<ShopState> {
   void changeLoginPasswordVisibility() {
     isPassword = !isPassword;
     suffix =
-        isPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined;
+    isPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined;
     emit(ChangeLoginPasswordVisibility());
   }
 
